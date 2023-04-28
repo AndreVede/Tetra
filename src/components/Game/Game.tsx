@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { forms } from './data-game';
 
 const WIDTH_GRILL = 14; // Number of Unit in width
 const HEIGHT_GRILL = 28; // Number of Unit in height
@@ -7,125 +8,18 @@ const UNIT_GRILL = 20; // Size in px of a Unit
 const X_INITIAL = 5;
 const Y_INITIAL = 0;
 
-const forms = {
-    O: [
-        [
-            [0, 0, 0, 0],
-            [0, 1, 1, 0],
-            [0, 1, 1, 0],
-            [0, 0, 0, 0],
-        ],
-    ],
-    I: [
-        [
-            [0, 0, 0, 0],
-            [0, 0, 0, 0],
-            [1, 1, 1, 1],
-            [0, 0, 0, 0],
-        ],
-        [
-            [0, 0, 1, 0],
-            [0, 0, 1, 0],
-            [0, 0, 1, 0],
-            [0, 0, 1, 0],
-        ],
-    ],
-    S: [
-        [
-            [0, 0, 0],
-            [0, 1, 1],
-            [1, 1, 0],
-        ],
-        [
-            [1, 0, 0],
-            [1, 1, 0],
-            [0, 1, 0],
-        ],
-    ],
-    Z: [
-        [
-            [0, 0, 0],
-            [1, 1, 0],
-            [0, 1, 1],
-        ],
-        [
-            [0, 1, 0],
-            [1, 1, 0],
-            [1, 0, 0],
-        ],
-    ],
-    L: [
-        [
-            [0, 0, 0],
-            [1, 1, 1],
-            [1, 0, 0],
-        ],
-        [
-            [1, 1, 0],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [0, 0, 1],
-            [1, 1, 1],
-            [0, 0, 0],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 0],
-            [0, 1, 1],
-        ],
-    ],
-    J: [
-        [
-            [0, 0, 0],
-            [1, 1, 1],
-            [0, 0, 1],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 0],
-            [1, 1, 0],
-        ],
-        [
-            [1, 0, 0],
-            [1, 1, 1],
-            [0, 0, 0],
-        ],
-        [
-            [0, 1, 1],
-            [0, 1, 0],
-            [0, 1, 0],
-        ],
-    ],
-    T: [
-        [
-            [0, 0, 0],
-            [1, 1, 1],
-            [0, 1, 0],
-        ],
-        [
-            [0, 1, 0],
-            [1, 1, 0],
-            [0, 1, 0],
-        ],
-        [
-            [0, 1, 0],
-            [1, 1, 1],
-            [0, 0, 0],
-        ],
-        [
-            [0, 1, 0],
-            [0, 1, 1],
-            [0, 1, 0],
-        ],
-    ],
-};
-
 const getFormsList = () => {
     let list: number[][][][] = [];
     for (let form in forms) {
-        list.push(forms[form as keyof typeof forms]);
+        list.push(forms[form as keyof typeof forms].piece);
+    }
+    return list;
+};
+
+const getFormsColorList = () => {
+    let list = [];
+    for (let form in forms) {
+        list.push(forms[form as keyof typeof forms].color);
     }
     return list;
 };
@@ -148,6 +42,7 @@ const Game: React.FC = () => {
     const [coord, setCoord] = React.useState<number[]>([X_INITIAL, Y_INITIAL]);
     const [pieceIndex, setPieceIndex] = React.useState<number>(0);
     const formsList = getFormsList();
+    const colorFormsList = getFormsColorList();
 
     const canvasDraw = React.useEffect(() => {
         setRefreshScreen(false);
@@ -193,14 +88,18 @@ const Game: React.FC = () => {
         for (let x: number = 0; x < currentPiece.length; x++) {
             for (let y: number = 0; y < currentPiece.length; y++) {
                 if (currentPiece[y][x] == 1) {
-                    ctx.fillStyle = '#831e1e'; // Border Piece Color
+                    let gradient = ctx.createLinearGradient(0, 0, 200, 50);
+                    gradient.addColorStop(0, colorFormsList[pieceIndex][0]);
+                    gradient.addColorStop(1, '#fff');
+
+                    ctx.fillStyle = colorFormsList[pieceIndex][1]; // Border Piece Color
                     ctx.fillRect((coord[0] + x) * UNIT_GRILL, (coord[1] + y) * UNIT_GRILL, UNIT_GRILL, UNIT_GRILL); // Border Piece
-                    ctx.fillStyle = '#b64f4f'; // Piece Color
+                    ctx.fillStyle = gradient; // Piece Color
                     ctx.fillRect(
-                        (coord[0] + x) * UNIT_GRILL + 1,
-                        (coord[1] + y) * UNIT_GRILL + 1,
-                        UNIT_GRILL - 2,
-                        UNIT_GRILL - 2
+                        (coord[0] + x) * UNIT_GRILL + 3,
+                        (coord[1] + y) * UNIT_GRILL + 3,
+                        UNIT_GRILL - 6,
+                        UNIT_GRILL - 6
                     );
                 }
             }
