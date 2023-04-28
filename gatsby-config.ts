@@ -2,7 +2,7 @@ import type { GatsbyConfig } from 'gatsby';
 
 const config: GatsbyConfig = {
     siteMetadata: {
-        title: `Template-ZB`,
+        title: `Tetra`,
         description: 'Description of site',
         author: 'Zacharie Boisnard',
         siteUrl: `https://www.yourdomain.tld`,
@@ -11,6 +11,10 @@ const config: GatsbyConfig = {
             {
                 name: 'Home',
                 link: '/',
+            },
+            {
+                name: 'Game',
+                link: '/game/',
             },
             {
                 name: 'Test Page in MD',

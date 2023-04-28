@@ -16,6 +16,7 @@ const Main = styled.main`
     ${flexCenter('column', 'flex-start')}
     gap: 10px;
     ${cssBase}
+    padding-bottom: 80px;
 `;
 
 const Layout: React.FC<LayoutProps> = ({ location, children }) => {
